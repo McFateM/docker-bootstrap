@@ -10,7 +10,9 @@
 ### Instructions
 
 * Copy `.env.dist` to `.env`
-* Set all values. _Note:_ that portions of ./init MUST specify SSH_USER as **root**, so specify values accordingly.  Also, be sure you are working on your local machine!
+* Set all values. 
+    - _Note:_ Portions of `./init` MUST specify SSH_USER as **root**, so specify values accordingly.  
+    - Also, be sure you are working on your local machine when you run `./init`!
 * Run `./init`
 
 ### Config values
