@@ -1,4 +1,4 @@
-# Docker Bootstrap
+# Docker Bootstrap - my-fork
 
 ### Installs
 
@@ -10,7 +10,7 @@
 ### Instructions
 
 * Copy `.env.dist` to `.env`
-* Set all values
+* Set all values. _Note that portions of ./init MUST specify SSH_USER as **root**, so specify values accordingly.  Also, be sure you are working on your local machine!
 * Run `./init`
 
 ### Config values
