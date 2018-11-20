@@ -23,3 +23,47 @@
 
 Full blog post on usage
 [can be found here](https://jtreminio.com/blog/setting-up-a-static-site-with-hugo-and-push-to-deploy).
+
+# McFateM Additions
+
+Blog posts about my additions to this tool [can be found here](https://static.grinnell.edu/blogs/McFateM).  My fork of this project is [here](https://github.com/McFateM/docker-bootstrap/blob/master/README.md).
+
+Launching a site under the *docker-bootstrap* umbrella involves opening an SSH terminal on the host, in my case that's [ssh://administrator@static.grinnell.edu](ssh://administrator@static.grinnell.edu), setting some key environment variables, and executing a `docker container run` command.  The necessary environment and command snippets include:
+
+## Juan's original snippet
+
+Modified to use `static.grinnell.edu` as the target `HOST`.  This works!
+
+```
+NAME=jtreminio_com
+HOST=static.grinnell.edu
+IMAGE="jtreminio/jtreminio.com"
+docker container run -d --name ${NAME} \
+    --label traefik.backend=${NAME} \
+    --label traefik.docker.network=traefik_webgateway \
+    --label traefik.frontend.rule=Host:${HOST} \
+    --label traefik.port=80 \
+    --label com.centurylinklabs.watchtower.enable=true \
+    --network traefik_webgateway \
+    --restart always \
+    ${IMAGE}
+```
+
+## My https://static.grinnell.edu/blogs/McFateM setup
+
+This works!
+
+```
+NAME=blogs-markm
+HOST=static.grinnell.edu
+IMAGE="mcfatem/blogs-markm"
+docker container run -d --name ${NAME} \
+    --label traefik.backend=${NAME} \
+    --label traefik.docker.network=traefik_webgateway \
+    --label "traefik.frontend.rule=Host:${HOST};PathPrefixStrip:/blogs/McFateM" \
+    --label traefik.port=80 \
+    --label com.centurylinklabs.watchtower.enable=true \
+    --network traefik_webgateway \
+    --restart always \
+    ${IMAGE}
+```
