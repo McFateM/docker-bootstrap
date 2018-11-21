@@ -56,9 +56,9 @@ docker container run -d --name ${NAME} \
 This works!
 
 ```
-NAME=blogs-markm
+NAME=blogs-mcfatem
 HOST=static.grinnell.edu
-IMAGE="mcfatem/blogs-markm"
+IMAGE="mcfatem/blogs-mcfatem"
 docker container run -d --name ${NAME} \
     --label traefik.backend=${NAME} \
     --label traefik.docker.network=traefik_webgateway \
@@ -72,12 +72,12 @@ docker container run -d --name ${NAME} \
 
 ## My https://mark.mcfate.family/blogs/GrinnellCollege setup
 
-We shall see.
+Yep, this works!
 
 ```
-NAME=blogs-markm
+NAME=blogs-mcfatem
 HOST=mark.mcfate.family
-IMAGE="mcfatem/blogs-markm"
+IMAGE="mcfatem/blogs-mcfatem"
 docker container run -d --name ${NAME} \
     --label traefik.backend=${NAME} \
     --label traefik.docker.network=traefik_webgateway \
