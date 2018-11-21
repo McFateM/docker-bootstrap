@@ -1,7 +1,7 @@
 # Docker Bootstrap - my-fork
 
 ### Installs
- 
+
 * [Docker](https://www.docker.com/)
 * [Docker Compose](https://docs.docker.com/compose/)
 * [Traefik Proxy](https://traefik.io/)
@@ -63,6 +63,25 @@ docker container run -d --name ${NAME} \
     --label traefik.backend=${NAME} \
     --label traefik.docker.network=traefik_webgateway \
     --label "traefik.frontend.rule=Host:${HOST};PathPrefixStrip:/blogs/McFateM" \
+    --label traefik.port=80 \
+    --label com.centurylinklabs.watchtower.enable=true \
+    --network traefik_webgateway \
+    --restart always \
+    ${IMAGE}
+```
+
+## My https://mark.mcfate.family/blogs/GrinnellCollege setup
+
+We shall see.
+
+```
+NAME=blogs-markm
+HOST=mark.mcfate.family
+IMAGE="mcfatem/blogs-markm"
+docker container run -d --name ${NAME} \
+    --label traefik.backend=${NAME} \
+    --label traefik.docker.network=traefik_webgateway \
+    --label "traefik.frontend.rule=Host:${HOST};PathPrefixStrip:/blogs/GrinnellCollege" \
     --label traefik.port=80 \
     --label com.centurylinklabs.watchtower.enable=true \
     --network traefik_webgateway \
