@@ -100,7 +100,26 @@ IMAGE="summittdweller/blogs-landmark"
 docker container run -d --name ${NAME} \
     --label traefik.backend=${NAME} \
     --label traefik.docker.network=traefik_webgateway \
-    --label "traefik.frontend.rule=Host:${HOST};PathPrefixStrip:/blogs" \
+    --label "traefik.frontend.rule=Host:${HOST};PathPrefixStrip:/blog" \
+    --label traefik.port=80 \
+    --label com.centurylinklabs.watchtower.enable=true \
+    --network traefik_webgateway \
+    --restart always \
+    ${IMAGE}
+```
+
+## My https://iowageocachers.org setup
+
+Yep, this works!
+
+```
+NAME=blogs-landmark
+HOST=iowageocachers.org
+IMAGE="summittdweller/blogs-landmark"
+docker container run -d --name ${NAME} \
+    --label traefik.backend=${NAME} \
+    --label traefik.docker.network=traefik_webgateway \
+    --label "traefik.frontend.rule=Host:${HOST}" \
     --label traefik.port=80 \
     --label com.centurylinklabs.watchtower.enable=true \
     --network traefik_webgateway \
