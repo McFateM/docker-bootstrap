@@ -126,3 +126,22 @@ docker container run -d --name ${NAME} \
     --restart always \
     ${IMAGE}
 ```
+
+## My https://static.grinnell.edu/vaf setup
+
+This works!
+
+```
+NAME=vaf
+HOST=static.grinnell.edu
+IMAGE="mcfatem/vaf"
+docker container run -d --name ${NAME} \
+    --label traefik.backend=${NAME} \
+    --label traefik.docker.network=traefik_webgateway \
+    --label "traefik.frontend.rule=Host:${HOST};PathPrefixStrip:/vaf" \
+    --label traefik.port=80 \
+    --label com.centurylinklabs.watchtower.enable=true \
+    --network traefik_webgateway \
+    --restart always \
+    ${IMAGE}
+```
