@@ -20,7 +20,8 @@ services:
       --acme.storage="/root/acme.json" \
       --acme.email="${LE_EMAIL}" \
       --entrypoints="Name:http Address::80 Redirect.EntryPoint:https" \
-      --entrypoints="Name:https Address::443 TLS" \
+      #--entrypoints="Name:https Address::443 TLS" \   Line below added to remove weak ciphers in Traefik.  17-Apr-2019
+      --entryPoints="Name:https Address::443 TLS:MinVersion:VersionTLS12 TLS:CipherSuites:TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256" \
       --defaultentrypoints="http,https"
     labels:
       - traefik.enable=false
