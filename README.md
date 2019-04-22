@@ -148,7 +148,7 @@ docker container run -d --name ${NAME} \
 
 ## My https://ohscribe.grinnell.edu setup on DGDocker2
 
-Stay tuned!  10-Apr-2019
+Stay tuned!  22-Apr-2019
 
 ```
 NAME=ohscribe
@@ -156,7 +156,7 @@ HOST=ohscribe.grinnell.edu
 IMAGE="mcfatem/ohscribe"
 docker container run -d --name ${NAME} \
     --label traefik.backend=${NAME} \
-    --label traefik.docker.network=traefik_webgateway \
+    --label traefik.docker.network=ingress \
     --label "traefik.frontend.rule=Host:${HOST}" \
     --label traefik.port=80 \
     --label com.centurylinklabs.watchtower.enable=true \
