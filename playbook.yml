@@ -30,7 +30,7 @@
 
     - name: Install Docker Compose
       get_url:
-        url: https://github.com/docker/compose/releases/download/1.22.0/docker-compose-Linux-x86_64
+        url: https://github.com/docker/compose/releases/download/1.24.0/docker-compose-Linux-x86_64
         dest: /usr/local/bin/docker-compose
         mode: "+x"
 
@@ -61,12 +61,16 @@
         state: touch
       changed_when: false
 
-    - name: Install Traefik and Watchtower
+    - name: Install Traefik, Watchtower and Portainer
       command: docker-compose up -d
       args:
         chdir: /opt/
       environment:
         COMPOSE_PROJECT_NAME: traefik
         LE_EMAIL: "{{ lookup('env', 'LE_EMAIL') }}"
+        TRAEFIK_ADMIN_PASS: "{{ lookup('env', 'TRAEFIK_ADMIN_PASS') }}"
+        TRAEFIK_DASHBOARD_URL: "{{ lookup('env', 'TRAEFIK_DASHBOARD_URL') }}"
+        PORTAINER_ADMIN_PASS: "{{ lookup('env', 'PORTAINER_ADMIN_PASS') }}"
+        PORTAINER_DASHBOARD_URL: "{{ lookup('env', 'PORTAINER_DASHBOARD_URL') }}"
       register: dc_changed
       changed_when: "'up-to-date' not in dc_changed.stderr"

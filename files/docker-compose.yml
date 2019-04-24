@@ -1,3 +1,14 @@
+## docker-compose.yml for launch of Traefik, Watchtower and Portainer
+
+##-- Notes ---------------------------------------------------------------------
+## 24-Apr-2019  Still working to make Traefik dashboard visible
+## 24-Apr-2019  Adding more .env vars for Traefik and Portainer control
+## 23-Apr-2019  Added Acme staging CA server spec.  Remove for production!
+## 23-Apr-2019  Added portainer service
+## 17-Apr-2019  --entrypoints="Name:https Address::443 TLS" line replaced with
+##   new line in proxy:command to remove weak ciphers in Traefik.
+##------------------------------------------------------------------------------
+
 version: '3.2'
 
 networks:
@@ -5,6 +16,7 @@ networks:
     driver: bridge
 
 services:
+
   proxy:
     container_name: traefik_proxy
     image: traefik
@@ -20,11 +32,20 @@ services:
       --acme.storage="/root/acme.json" \
       --acme.email="${LE_EMAIL}" \
       --entrypoints="Name:http Address::80 Redirect.EntryPoint:https" \
-      #--entrypoints="Name:https Address::443 TLS" \   Line below added to remove weak ciphers in Traefik.  17-Apr-2019
-      --entryPoints="Name:https Address::443 TLS:MinVersion:VersionTLS12 TLS:CipherSuites:TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256" \
+      --entryPoints="Name:https Address::443 TLS TLS.MinVersion:VersionTLS12 TLS.CipherSuites:TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256" \
       --defaultentrypoints="http,https"
+## Add the following line back into 'command:' in order to use LE's Acme staging CA server
+#      --acme.caserver="https://acme-staging-v02.api.letsencrypt.org/directory" \
+## Trying to open traefik2.grinnell.edu so I can see the Traefik dashboard
+#      --api.entryPoint="http://traefik2.grinnell.edu" \
+#      --api.dashboard=true
     labels:
       - traefik.enable=false
+## More failed attempts to make the Traefik dashboard visible
+#      - traefik.enable=true    ## we want to be able to see the Traefik dashboard!
+#      - traefik.port=8080
+#      - "traefik.frontend.rule=Host:traefik2.grinnell.edu"
+#      - "traefik.frontend.auth.basic.users=admin:$$2y$$05$$pJEzHJBzfoYYS7/hGAedcOP8XdsqNXE7j.LHFBVjueASOqOvvjGOy"
     networks:
       - webgateway
     ports:
@@ -45,3 +66,21 @@ services:
       - label-enable=true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+
+  portainer:
+    container_name: portainer
+    image: portainer/portainer
+    command: --admin-password $$2y$$05$$pJEzHJBzfoYYS7/hGAedcOP8XdsqNXE7j.LHFBVjueASOqOvvjGOy -H unix:///var/run/docker.sock
+#    command: --admin-password ${PORTAINER_ADMIN_PASS} -H unix:///var/run/docker.sock
+    networks:
+      - webgateway
+    ports:
+      - "9010:9000" ## Remapped to avoid conflicts on systems/servers with portainer already running.
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+#      - portainer-data:/data
+    labels:
+      - traefik.port=9000
+      - traefik.enable=true
+      - "traefik.frontend.rule=Host:portainer2.grinnell.edu"
+#      - "traefik.frontend.rule=Host:${PORTAINER_DASHBOARD_URL}"
