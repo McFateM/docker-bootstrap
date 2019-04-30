@@ -11,6 +11,8 @@ SERVER_IP=${SERVER_IP:-}
 SSH_USER=${SSH_USER}
 SSH_PRIVATE_KEY=${SSH_PRIVATE_KEY}
 LE_EMAIL=${LE_EMAIL}
+PORTAINER_ADMIN_PASS=${PORTAINER_ADMIN_PASS}
+PORTAINER_DASHBOARD_URL=${PORTAINER_DASHBOARD_URL}
 
 if [[ -z "${SERVER_IP}" ]]; then
     printf "You must create a .env file and define "
@@ -26,6 +28,8 @@ docker container run -it --rm \
     -e SERVER_IP=${SERVER_IP} \
     -e SSH_USER=${SSH_USER} \
     -e LE_EMAIL=${LE_EMAIL} \
+    -e PORTAINER_ADMIN_PASS=${PORTAINER_ADMIN_PASS} \
+    -e PORTAINER_DASHBOARD_URL=${PORTAINER_DASHBOARD_URL} \
     -v ${PWD}:/etc/ansible \
     -v ${SSH_PRIVATE_KEY}:/root/.ssh/id_rsa \
     williamyeh/ansible:ubuntu16.04-onbuild bash -c "${CMD}"
