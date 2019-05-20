@@ -40,23 +40,16 @@ services:
       --entryPoints="Name:https Address::443 TLS TLS.MinVersion:VersionTLS12 TLS.CipherSuites:TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256" \
       --defaultentrypoints="http,https" \
       --api \
-      --api.entryPoint="proxy" \
       --api.dashboard=true
-## Trying to open traefik2.grinnell.edu so I can see the Traefik dashboard
-#      --api.entryPoint="http://traefik2.grinnell.edu" \
-#      --api.dashboard=true \
+
     labels:
       traefik.enable: true
       traefik.frontend.auth.basic: "admin:$$2y$$05$$pJEzHJBzfoYYS7/hGAedcOP8XdsqNXE7j.LHFBVjueASOqOvvjGOy"
       traefik.frontend.redirect.regex: "^(.*)/traefik$$"
       traefik.frontend.redirect.replacement: "$$1/traefik/"
-      traefik.frontend.rule: "PathPrefix:/portainer;ReplacePathRegex: ^/traefik/(.*) /$$1"
+      traefik.frontend.rule: "PathPrefix:/traefik;ReplacePathRegex: ^/traefik/(.*) /$$1"
       traefik.port: 8080
-## More failed attempts to make the Traefik dashboard visible
-#      - traefik.enable=true    ## we want to be able to see the Traefik dashboard!
-#      - traefik.port=8080
-#      - "traefik.frontend.rule=Host:traefik2.grinnell.edu"
-#      - "traefik.frontend.auth.basic.users=admin:$$2y$$05$$pJEzHJBzfoYYS7/hGAedcOP8XdsqNXE7j.LHFBVjueASOqOvvjGOy"
+
     networks:
       - webgateway
     ports:
