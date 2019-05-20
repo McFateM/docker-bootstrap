@@ -38,12 +38,20 @@ services:
       --acme.email="${LE_EMAIL}" \
       --entrypoints="Name:http Address::80 Redirect.EntryPoint:https" \
       --entryPoints="Name:https Address::443 TLS TLS.MinVersion:VersionTLS12 TLS.CipherSuites:TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256" \
-      --defaultentrypoints="http,https"
+      --defaultentrypoints="http,https" \
+      --api \
+      --api.entryPoint="proxy" \
+      --api.dashboard=true
 ## Trying to open traefik2.grinnell.edu so I can see the Traefik dashboard
 #      --api.entryPoint="http://traefik2.grinnell.edu" \
 #      --api.dashboard=true \
     labels:
-      - traefik.enable=false
+      traefik.enable: true
+      traefik.frontend.auth.basic: "admin:$$2y$$05$$pJEzHJBzfoYYS7/hGAedcOP8XdsqNXE7j.LHFBVjueASOqOvvjGOy"
+      traefik.frontend.redirect.regex: "^(.*)/traefik$$"
+      traefik.frontend.redirect.replacement: "$$1/traefik/"
+      traefik.frontend.rule: "PathPrefix:/portainer;ReplacePathRegex: ^/traefik/(.*) /$$1"
+      traefik.port: 8080
 ## More failed attempts to make the Traefik dashboard visible
 #      - traefik.enable=true    ## we want to be able to see the Traefik dashboard!
 #      - traefik.port=8080
@@ -77,12 +85,17 @@ services:
     networks:
       - webgateway
     ports:
-      - "9010:9000" ## Remapped to avoid conflicts on systems/servers with portainer already running.
+      - "9000:9000"
+      #- "9010:9000" ## Remap to avoid conflicts on systems/servers with portainer already running.
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 #      - portainer-data:/data
+
+    ## traefik.frontend.... bits per
+    ##   https://github.com/pascalandy/docker-stack-this/blob/master/traefik_stack5/toolportainer.yml#L55
     labels:
-      - traefik.port=9000
-      - traefik.enable=true
-#      - "traefik.frontend.rule=Host:portainer2.grinnell.edu"
-      - "traefik.frontend.rule=Host:${PORTAINER_DASHBOARD_URL}"
+      traefik.port: 9000
+      traefik.enable: true
+      traefik.frontend.redirect.regex: "^(.*)/portainer$$"
+      traefik.frontend.redirect.replacement: "$$1/portainer/"
+      traefik.frontend.rule: "PathPrefix:/portainer;ReplacePathRegex: ^/portainer/(.*) /$$1"
