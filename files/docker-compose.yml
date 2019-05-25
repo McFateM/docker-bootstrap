@@ -10,9 +10,12 @@
 ##   new line in proxy:command to remove weak ciphers in Traefik.
 ##------------------------------------------------------------------------------
 
-## Add the --acme.caserver... line back into 'command:' in order to use LE's Acme staging CA server for testing.
-## Remove it for final production deployment.
-#      --acme.caserver="https://acme-staging-v02.api.letsencrypt.org/directory" \
+## Use ONE of the following --acme.caserver... lines:
+##  For testing and development...
+##      --acme.caserver="https://acme-staging-v02.api.letsencrypt.org/directory" \
+##  For production...
+##      --acme.caserver="https://acme-v02.api.letsencrypt.org/directory" \
+
 
 version: '3.2'
 
@@ -28,6 +31,7 @@ services:
     command: >-
       --docker --logLevel=INFO \
       --acme \
+      --acme.caserver="https://acme-v02.api.letsencrypt.org/directory" \
       --acme.acmelogging \
       --acme.dnschallenge=false \
       --acme.entrypoint="https" \
