@@ -1,7 +1,8 @@
 ## docker-compose.yml for launch of Traefik, Watchtower and Portainer
 
 ##-- Notes ---------------------------------------------------------------------
-## 29-May-2019  Switching Traefik to :alpine image so we have a shell within
+## 29-May-2019  Recognized that /root/acme.json is PERSISTENT on the server!
+##   Removing the old/existing copy now before trying to secure new certs.
 ## 02-May-2019  Restored Portainer's .env variables.
 ## 24-Apr-2019  Still working to make Traefik dashboard visible
 ## 24-Apr-2019  Adding more .env vars for Traefik and Portainer control
