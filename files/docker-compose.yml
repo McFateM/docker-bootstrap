@@ -10,9 +10,10 @@
 ##   new line in proxy:command to remove weak ciphers in Traefik.
 ##------------------------------------------------------------------------------
 
-## Add the --acme.caserver... line back into 'command:' in order to use LE's Acme staging CA server for testing.
-## Remove it for final production deployment.
+## Add ONE of the following --acme.caserver... lines into 'command:' in order to use LE's
+##  Acme staging (for testing) or production CA server.
 #      --acme.caserver="https://acme-staging-v02.api.letsencrypt.org/directory" \
+#      --acme.caserver="https://acme-v02.api.letsencrypt.org/directory" \
 
 version: '3.2'
 
@@ -36,19 +37,21 @@ services:
       --acme.onhostrule=true \
       --acme.storage="/root/acme.json" \
       --acme.email="${LE_EMAIL}" \
+      --acme.caserver="https://acme-v02.api.letsencrypt.org/directory" \
       --entrypoints="Name:http Address::80 Redirect.EntryPoint:https" \
       --entryPoints="Name:https Address::443 TLS TLS.MinVersion:VersionTLS12 TLS.CipherSuites:TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256" \
-      --defaultentrypoints="http,https" \
-      --api \
-      --api.dashboard=true
+      --defaultentrypoints="http,https"
+      # --api \
+      # --api.dashboard=true
 
     labels:
-      traefik.enable: true
-      traefik.frontend.auth.basic: "admin:$$2y$$05$$pJEzHJBzfoYYS7/hGAedcOP8XdsqNXE7j.LHFBVjueASOqOvvjGOy"
-      traefik.frontend.redirect.regex: "^(.*)/traefik$$"
-      traefik.frontend.redirect.replacement: "$$1/traefik/"
-      traefik.frontend.rule: "PathPrefix:/traefik;ReplacePathRegex: ^/traefik/(.*) /$$1"
-      traefik.port: 8080
+      traefik.enable: false
+      # traefik.enable: true
+      # traefik.frontend.auth.basic.users: "admin:$$2y$$05$$pJEzHJBzfoYYS7/hGAedcOP8XdsqNXE7j.LHFBVjueASOqOvvjGOy"
+      # traefik.frontend.redirect.regex: "^(.*)/traefik$$"
+      # traefik.frontend.redirect.replacement: "$$1/traefik/"
+      # traefik.frontend.rule: "PathPrefix:/traefik;ReplacePathRegex: ^/traefik/(.*) /$$1"
+      # traefik.port: 8080
 
     networks:
       - webgateway
@@ -79,7 +82,6 @@ services:
       - webgateway
     ports:
       - "9000:9000"
-      #- "9010:9000" ## Remap to avoid conflicts on systems/servers with portainer already running.
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 #      - portainer-data:/data
