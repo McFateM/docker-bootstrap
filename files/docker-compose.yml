@@ -29,7 +29,7 @@ services:
 
   proxy:
     container_name: traefik_proxy
-    image: containous/traefik:alpine
+    image: traefik
     command: >-
       --docker --logLevel=INFO \
       --acme \
