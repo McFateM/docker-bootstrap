@@ -1,6 +1,7 @@
 ## docker-compose.yml for launch of Traefik, Watchtower and Portainer
 
 ##-- Notes ---------------------------------------------------------------------
+## 29-May-2019  Switching Traefik to :alpine image so we have a shell within
 ## 02-May-2019  Restored Portainer's .env variables.
 ## 24-Apr-2019  Still working to make Traefik dashboard visible
 ## 24-Apr-2019  Adding more .env vars for Traefik and Portainer control
@@ -10,10 +11,12 @@
 ##   new line in proxy:command to remove weak ciphers in Traefik.
 ##------------------------------------------------------------------------------
 
-## Add ONE of the following --acme.caserver... lines into 'command:' in order to use LE's
-##  Acme staging (for testing) or production CA server.
-#      --acme.caserver="https://acme-staging-v02.api.letsencrypt.org/directory" \
-#      --acme.caserver="https://acme-v02.api.letsencrypt.org/directory" \
+## Use ONE of the following --acme.caserver... lines:
+##  For testing and development...
+##      --acme.caserver="https://acme-staging-v02.api.letsencrypt.org/directory" \
+##  For production...
+##      --acme.caserver="https://acme-v02.api.letsencrypt.org/directory" \
+
 
 version: '3.2'
 
@@ -25,10 +28,11 @@ services:
 
   proxy:
     container_name: traefik_proxy
-    image: traefik
+    image: containous/traefik:alpine
     command: >-
       --docker --logLevel=INFO \
       --acme \
+      --acme.caserver="https://acme-v02.api.letsencrypt.org/directory" \
       --acme.acmelogging \
       --acme.dnschallenge=false \
       --acme.entrypoint="https" \
@@ -37,7 +41,6 @@ services:
       --acme.onhostrule=true \
       --acme.storage="/root/acme.json" \
       --acme.email="${LE_EMAIL}" \
-      --acme.caserver="https://acme-v02.api.letsencrypt.org/directory" \
       --entrypoints="Name:http Address::80 Redirect.EntryPoint:https" \
       --entryPoints="Name:https Address::443 TLS TLS.MinVersion:VersionTLS12 TLS.CipherSuites:TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256" \
       --defaultentrypoints="http,https"
