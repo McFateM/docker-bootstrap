@@ -147,18 +147,18 @@ docker container run -d --name ${NAME} \
 ```
 
 
-## My https://summittdweller.com/blog setup
+## My https://summittdweller.com/blogs/mark setup
 
 Works!!!
 
 ```
-NAME=blog
+NAME=weblog-sd
 HOST=summittdweller.com
 IMAGE="mcfatem/weblog-sd"
 docker container run -d --name ${NAME} \
     --label traefik.backend=${NAME} \
     --label traefik.docker.network=traefik_webgateway \
-    --label "traefik.frontend.rule=Host:${HOST};PathPrefixStrip:/blog" \
+    --label "traefik.frontend.rule=Host:${HOST};PathPrefixStrip:/blogs/mark" \
     --label traefik.port=80 \
     --label com.centurylinklabs.watchtower.enable=true \
     --network traefik_webgateway \

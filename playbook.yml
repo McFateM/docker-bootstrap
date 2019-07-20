@@ -61,17 +61,19 @@
         state: touch
       changed_when: false
 
-    - name: Install Traefik, Watchtower and Portainer
+#    - name: Install Traefik, Watchtower and Portainer
+    - name: Install Traefik and Watchtower
       command: docker-compose up -d
       args:
         chdir: /opt/
       environment:
         COMPOSE_PROJECT_NAME: traefik
-        HOST_DNS: "{{ lookup('env', 'HOST_DNS') }}"
         LE_EMAIL: "{{ lookup('env', 'LE_EMAIL') }}"
-        TRAEFIK_ADMIN_PASS: "{{ lookup('env', 'TRAEFIK_ADMIN_PASS') }}"
-        TRAEFIK_DASHBOARD_PATH: "{{ lookup('env', 'TRAEFIK_DASHBOARD_PATH') }}"
         PORTAINER_ADMIN_PASS: "{{ lookup('env', 'PORTAINER_ADMIN_PASS') }}"
-        PORTAINER_DASHBOARD_PATH: "{{ lookup('env', 'PORTAINER_DASHBOARD_PATH') }}"
+        # HOST_DNS: "{{ lookup('env', 'HOST_DNS') }}"
+        # TRAEFIK_ADMIN_PASS: "{{ lookup('env', 'TRAEFIK_ADMIN_PASS') }}"
+        # TRAEFIK_DASHBOARD_PATH: "{{ lookup('env', 'TRAEFIK_DASHBOARD_PATH') }}"
+        # PORTAINER_ADMIN_PASS: "{{ lookup('env', 'PORTAINER_ADMIN_PASS') }}"
+        # PORTAINER_DASHBOARD_PATH: "{{ lookup('env', 'PORTAINER_DASHBOARD_PATH') }}"
       register: dc_changed
       changed_when: "'up-to-date' not in dc_changed.stderr"
