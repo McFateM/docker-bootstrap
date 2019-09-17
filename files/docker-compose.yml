@@ -1,6 +1,11 @@
 ## docker-compose.yml for launch of Traefik, Watchtower and Portainer
 
 ##-- Notes ---------------------------------------------------------------------
+## 17-Sep-2019  Traefik crashing with "invalid command" error.  Replaced vars
+##   LE_EMAIL and PORTAINER_ADMIN_PASS with embedded strings to remedy.
+##   That change did not help, but changing the Traefik image spec from
+##   'traefik' to 'traefik:alpine' did seem to fix this problem.  It looks
+##   like the old spec was pulling a v2.x Traefik image?
 ## 29-May-2019  Recognized that /root/acme.json is PERSISTENT on the server!
 ##   Removing the old/existing copy now before trying to secure new certs.
 ## 02-May-2019  Restored Portainer's .env variables.
@@ -29,7 +34,7 @@ services:
 
   proxy:
     container_name: traefik_proxy
-    image: traefik
+    image: traefik:alpine
     command: >-
       --docker --logLevel=INFO \
       --acme \
@@ -41,7 +46,7 @@ services:
       --acme.httpChallenge.entryPoint="http" \
       --acme.onhostrule=true \
       --acme.storage="/root/acme.json" \
-      --acme.email="${LE_EMAIL}" \
+      --acme.email="digital@grinnell.edu" \
       --entrypoints="Name:http Address::80 Redirect.EntryPoint:https" \
       --entryPoints="Name:https Address::443 TLS TLS.MinVersion:VersionTLS12 TLS.CipherSuites:TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256" \
       --defaultentrypoints="http,https"
@@ -81,7 +86,7 @@ services:
   portainer:
     container_name: portainer
     image: portainer/portainer
-    command: --admin-password ${PORTAINER_ADMIN_PASS} -H unix:///var/run/docker.sock
+    command: --admin-password "$$2y$$05$$pJEzHJBzfoYYS7/hGAedcOP8XdsqNXE7j.LHFBVjueASOqOvvjGOy" -H unix:///var/run/docker.sock
     networks:
       - webgateway
     ports:
