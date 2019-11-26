@@ -1,6 +1,7 @@
 ## docker-compose.yml for launch of Traefik, Watchtower and Portainer
 
 ##-- Notes ---------------------------------------------------------------------
+## 26-Nov-2019  Attempting to add email 'info' notifications to Watchtower
 ## 17-Sep-2019  Traefik crashing with "invalid command" error.  Replaced vars
 ##   LE_EMAIL and PORTAINER_ADMIN_PASS with embedded strings to remedy.
 ##   That change did not help, but changing the Traefik image spec from
@@ -82,6 +83,14 @@ services:
       - label-enable=true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      WATCHTOWER_NOTIFICATIONS: "email"
+      WATCHTOWER_NOTIFICATION_EMAIL_FROM: "summitt.dweller@gmail.com"
+      WATCHTOWER_NOTIFICATION_EMAIL_TO: "mark.mcfate@icloud.com"
+      WATCHTOWER_NOTIFICATION_EMAIL_SERVER: "smtp.gmail.com"
+      WATCHTOWER_NOTIFICATION_EMAIL_SERVER_USER: "summitt.dweller@gmail.com"
+      WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD: "hwhqllmxobtqexyv"
+      WATCHTOWER_NOTIFICATION_EMAIL_DELAY: 2
 
   portainer:
     container_name: portainer
